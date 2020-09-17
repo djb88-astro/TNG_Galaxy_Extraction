@@ -16,11 +16,13 @@ Arguments:
 
 class build_table:
     def __init__(
-        self, mpi, sim="/n/hernquistfs3/IllustrisTNG/Runs/L205n2500TNG/output", snap=99
+        self, mpi, qoi, sim="/n/hernquistfs3/IllustrisTNG/Runs/L205n2500TNG/output", snap=99
     ):
 
         if mpi.Rank == 0:
             print(" > Building subfind tables...", flush=True)
+
+        self.qoi = qoi
 
         self.path = "{0}/groups_{1:03d}".format(sim, snap)
 
@@ -88,21 +90,6 @@ class build_table:
         Arguments:
           -mpi : Instance of the MPI environment class
         """
-
-        self.qoi = [
-            "Group/GroupPos",
-            "Group/Group_M_Crit200",
-            "Group/Group_M_Crit500",
-            "Group/Group_M_TopHat200",
-            "Group/Group_R_Crit200",
-            "Group/Group_R_Crit500",
-            "Group/Group_R_TopHat200",
-            "Group/GroupLenType",
-            "Group/GroupFirstSub",
-            "Group/GroupNsubs",
-            "Group/GroupVel",
-            "Subhalo/SubhaloLenType",
-        ]
 
         self.split_files(mpi)
 
@@ -212,6 +199,14 @@ class build_table:
             self.Vbulk = table
         elif x == "Subhalo/SubhaloLenType":
             self.SubLenType = table
+        elif x == "Subhalo/SubhaloMassInRadType":
+            self.SubMassRadType = table
+        elif x == "Subhalo/SubhaloMassType":
+            self.SubMassType = table
+        elif x == "Subhalo/SubhaloPos":
+            self.SubPos = table
+        elif x == "Subhalo/SubhaloStellarPhotometrics":
+            self.SubPhoto = table
         else:
             self.error(mpi, "TABLE_STORE")
         del table

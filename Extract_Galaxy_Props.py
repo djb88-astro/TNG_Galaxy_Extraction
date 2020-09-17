@@ -4,12 +4,13 @@ import mpi_init
 import merge
 
 
-def extract_galaxy_colours(sim, path, bar_mass, dm_mass, snapshot):
+def extract_galaxy_colours(mpi, sim, path, bar_mass, dm_mass, snapshot):
     """
     Extract the colours of all galaxies within a 2 * R200 sphere around
     all clusters with a mass M200 > 10^14 Msun
 
     Arguments:
+      -mpi      : MPI environment class instance
       -sim      : Tag labelling the simulation of interest [STRING]
       -path     : Path the simulation data [STRING]
       -bar_mass : Target mass of gas cells [FLOAT]
@@ -17,9 +18,26 @@ def extract_galaxy_colours(sim, path, bar_mass, dm_mass, snapshot):
       -snapshot : The snapshot of interest [INT]
     """
 
+    if not mpi.Rank:
+        print("--- Examining {0} simulation".format(sim), flush=True)
+        print("--- Snapshot: {0:03d}".format(snapshot), flush=True)
+
     # Load subfind table
+    quantities_of_interest = [
+        "Group/GroupPos",
+        "Group/Group_M_Crit200",
+        "Group/Group_R_Crit200",
+        "Group/GroupFirstSub",
+        "Group/GroupNsubs",
+        "Subhalo/SubhaloMassInRadType",
+        "Subhalo/SubhaloMassType",
+        "Subhalo/SubhaloPos",
+        "Subhalo/SubhaloStellarPhotometrics"
+    ]
 
+    subfind_table = subfind_data.build_table(mpi, quantities_of_interest, sim=path, snap=snapshot)
 
+    quit()
     # Copy
 
 
@@ -51,8 +69,11 @@ if __name__ == "__main__":
     # Snapshots of interest
     snapshots = [40, 50, 59, 67, 72, 78, 84, 91, 99]
 
+    # Initialize MPI environment
+    mpi = mpi_init.mpi()
+
     # Now loop and extract galaxy colours
     for res, props in sims.items():
         for snap in snapshots:
-            extract_galaxy_colours(res, props[0], props[1], props[2], snap)
+            extract_galaxy_colours(mpi, res, props[0], props[1], props[2], snap)
             quit()
