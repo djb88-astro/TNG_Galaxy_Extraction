@@ -68,7 +68,7 @@ def merge_outputs(outputs):
       -outputs : Search term for output files of interest [STRING]
     """
 
-    print(" > Merging {0}*".format(outputs))
+    print(" > Merging {0}*".format(outputs), flush=True)
     # Find outputs of interest
     files = []
     for y in os.listdir("output/"):
@@ -84,11 +84,11 @@ def merge_outputs(outputs):
     for y in files:
         if y == flib:
             continue
-        print("  -{0}".format(y))
+        print("  -{0}".format(y), flush=True)
         f = h5py.File(y, "r")
         fk = sorted(f.keys())
         for z in fk:
-            print("  --> {0}".format(z))
+            print("  --> {0}".format(z), flush=True)
             copy_file_struct(f, f[z], outf)
         f.close()
         os.remove(y)

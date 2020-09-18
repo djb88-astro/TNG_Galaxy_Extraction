@@ -16,7 +16,11 @@ Arguments:
 
 class build_table:
     def __init__(
-        self, mpi, qoi, sim="/n/hernquistfs3/IllustrisTNG/Runs/L205n2500TNG/output", snap=99
+        self,
+        mpi,
+        qoi,
+        sim="/n/hernquistfs3/IllustrisTNG/Runs/L205n2500TNG/output",
+        snap=99,
     ):
 
         if mpi.Rank == 0:
